@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     public TMP_Text btnText7 = null;
     public TMP_Text btnText8 = null;
     public TMP_Text btnText9 = null;
+    public TMP_Text msg;
 
     public Button btnResetGame = null;
 
@@ -40,12 +41,15 @@ public class PlayerController : MonoBehaviour
         ResetGame();
     }
 
+    bool gameOver = false; // set when game is over.
+
     public void score()
     {
         // Player X winning conditions
         if (CheckWin("X"))
         {
             DisplayWinner("X");
+            gameOver = true;
             return;
         }
 
@@ -53,6 +57,14 @@ public class PlayerController : MonoBehaviour
         if (CheckWin("O"))
         {
             DisplayWinner("O");
+            gameOver = true;
+            return;
+        }
+
+        if (IsBoardFull())
+        {
+            msg.text = "It's a draw!";
+            gameOver = true;
             return;
         }
 
@@ -60,64 +72,87 @@ public class PlayerController : MonoBehaviour
         SwitchTurns();
     }
 
+    // Checks if board if full
+
+    bool IsBoardFull()
+    {
+        TMP_Text[] allButtons = { btnText1, btnText2, btnText3, btnText4, btnText5, btnText6, btnText7, btnText8, btnText9 };
+        foreach ( TMP_Text button in allButtons )
+        {
+            if (button.text == "") // if there's an empty button
+            {
+                return false;
+            }
+        }
+        return false;
+    }
     // Check if a player has won
     bool CheckWin(string player)
     {
         if (btnText1.text == player && btnText2.text == player && btnText3.text == player)
         {
             horizontalLine1.SetActive(true);
+            msg.text = player + " Wins";
             return true;
         }
 
         if (btnText4.text == player && btnText5.text == player && btnText6.text == player)
         {
             horizontalLine2.SetActive(true);
+            msg.text = player + " Wins";
             return true;
         }
 
         if (btnText7.text == player && btnText8.text == player && btnText9.text == player)
         {
             horizontalLine3.SetActive(true);
+            msg.text = player + " Wins";
             return true;
         }
 
         if (btnText1.text == player && btnText4.text == player && btnText7.text == player)
         {
             verticalLine1.SetActive(true);
+            msg.text = player + " Wins";
             return true;
         }
 
         if (btnText2.text == player && btnText5.text == player && btnText8.text == player)
         {
             verticalLine2.SetActive(true);
+            msg.text = player + " Wins";
             return true;
         }
 
         if (btnText3.text == player && btnText6.text == player && btnText9.text == player)
         {
             verticalLine3.SetActive(true);
+            msg.text = player + " Wins";
             return true;
         }
 
         if (btnText1.text == player && btnText5.text == player && btnText9.text == player)
         {
             diagonalLine1.SetActive(true);
+            msg.text = player + " Wins";
             return true;
         }
 
         if (btnText3.text == player && btnText5.text == player && btnText7.text == player)
         {
             diagonalLine2.SetActive(true);
+            msg.text = player + " Wins";
             return true;
         }
 
         return false;
+        
     }
 
     // Display the winner and strike the line
     void DisplayWinner(string winner)
     {
-       //  nextPlayerText.text = $"{winner} Wins!";
+       // nextPlayerText.text = $"{winner} Wins!";
     }
 
     // Switch turns between X and O players
@@ -154,7 +189,7 @@ public class PlayerController : MonoBehaviour
     // Button click events for each grid button
     public void OnGridButtonClick(TMP_Text buttonText)
     {
-        if (buttonText.text == "")
+        if (buttonText.text == "" && !gameOver) // Only allows when game isn't over
         {
             buttonText.text = currentPlayer;
             score();
@@ -173,6 +208,7 @@ public class PlayerController : MonoBehaviour
         btnText7.text = "";
         btnText8.text = "";
         btnText9.text = "";
+        msg.text = "";
 
         horizontalLine1.SetActive(false);
         horizontalLine2.SetActive(false);
@@ -184,6 +220,7 @@ public class PlayerController : MonoBehaviour
         diagonalLine2.SetActive(false);
 
         checker = false;
+        gameOver = false;
         currentPlayer = "X";
        // nextPlayerText.text = $"Next Player: {currentPlayer}";
     }
