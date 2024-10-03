@@ -12,7 +12,7 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("TicTacToe");
     }
 
-    public void QuitMaze()
+    public void QuitGame()
     {
         Application.Quit();
         Debug.Log("Quit Game");
